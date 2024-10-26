@@ -1,8 +1,8 @@
 import express from 'express';
-const authRoute = express.Router();
-import User from '../models/sign-up.js' 
+const signUp = express.Router();
+import User from '../models/user.js' 
 
-authRoute.post('/sign-up', async (req, res) => {
+signUp.post('/sign-up', async (req, res) => {
     console.log('res', req.body)
     console.log('res', req)
     try {
@@ -25,11 +25,11 @@ authRoute.post('/sign-up', async (req, res) => {
         res.status(201).send({ message: 'User created successfully', user: newUser });
     } catch (error) {
         console.error("Error creating user:", error);
-        res.status(500).send({ error: 'Error creating user' });
+        res.status(500).send({ error: error.message });
     }
 });
 
-export default authRoute;
+export default signUp;
 
 
 
