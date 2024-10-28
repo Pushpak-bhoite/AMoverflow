@@ -6,7 +6,7 @@ const database = 'test'          // REPLACE WITH YOUR OWN DB NAME
 const connectDB = async () => {
   try {
     
-    await mongoose.connect(`mongodb+srv://2017pushpakbhoite:Pushpak%40123@pushpakclusture-3.zy7cn.mongodb.net/`)
+    await mongoose.connect(`mongodb+srv://2017pushpakbhoite:Pushpak%40123@pushpakclusture-3.zy7cn.mongodb.net/AmOverflow`)
 
     console.log('MongoDB connected!!')
   } catch (err) {

@@ -7,14 +7,17 @@ import connectDB from './config/database.js';
 import cookieParser from 'cookie-parser';
 
 const app = express();
+import cors from 'cors'
 
+
+app.use(cors())
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 // This is required to handle urlencoded data
-app.use(express.json()); 
+app.use(express.json());
 // This to handle json data coming from requests mainly post
-app.use('/auth',signUp)
-app.use('/auth',signIn)
+app.use('/auth', signUp)
+app.use('/auth', signIn)
 app.use(userAuth, profile)
 
 app.get('/', (req, res) => {
