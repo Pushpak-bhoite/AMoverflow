@@ -1,18 +1,18 @@
-'use client'
 
 import { useState } from 'react'
 import { AlertCircle } from 'lucide-react'
+import axios from 'axios'
 
 interface FormData {
   title: string
-  body: string
+  description: string
   tags: string
 }
 
 export default function Component() {
   const [formData, setFormData] = useState<FormData>({
     title: '',
-    body: '',
+    description: '',
     tags: ''
   })
   const [errors, setErrors] = useState<Partial<FormData>>({})
@@ -28,11 +28,11 @@ export default function Component() {
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {}
-    if (formData.title.length < 15) {
+    if (formData.title.length < 5) {
       newErrors.title = 'Title must be at least 15 characters long'
     }
-    if (formData.body.length < 30) {
-      newErrors.body = 'Question body must be at least 30 characters long'
+    if (formData.description.length < 5) {
+      newErrors.description = 'Question description must be at least 30 characters long'
     }
     if (formData.tags.split(' ').filter(tag => tag.trim() !== '').length < 1) {
       newErrors.tags = 'At least one tag is required'
@@ -47,7 +47,12 @@ export default function Component() {
       // Here you would typically send the data to your backend
       console.log('Form submitted:', formData)
       // Reset form after submission
-      setFormData({ title: '', body: '', tags: '' })
+      try {
+        axios.post('http://localhost:3400/', formData);
+      } catch (error) {
+        
+      }
+      setFormData({ title: '', description: '', tags: '' })
     }
   }
 
@@ -79,24 +84,24 @@ export default function Component() {
             )}
           </div>
           <div>
-            <label htmlFor="body" className="block text-sm font-medium text-gray-700 mb-1">
-              Body
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+            description
             </label>
             <textarea
-              id="body"
-              name="body"
-              value={formData.body}
+              id="description"
+              name="description"
+              value={formData.description}
               onChange={handleChange}
               placeholder="Provide details about your question..."
               rows={6}
               className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.body ? 'border-red-500' : 'border-gray-300'
+                errors.description ? 'border-red-500' : 'border-gray-300'
               }`}
             />
-            {errors.body && (
+            {errors.description && (
               <p className="mt-1 text-sm text-red-500 flex items-center">
                 <AlertCircle className="w-4 h-4 mr-1" />
-                {errors.body}
+                {errors.description}
               </p>
             )}
           </div>

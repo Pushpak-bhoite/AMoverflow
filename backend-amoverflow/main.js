@@ -2,6 +2,7 @@ import express from 'express';
 import signUp from './routes/sign-up.js';
 import signIn from './routes/sign-in.js';
 import profile from './routes/profile.js';
+import askQuestion from './routes/askQuestion.js';
 import { userAuth } from './middlewares/auth.js';
 import connectDB from './config/database.js';
 import cookieParser from 'cookie-parser';
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use('/auth', signUp)
 app.use('/auth', signIn)
 app.use(userAuth, profile)
+app.use(userAuth, askQuestion)
 
 app.get('/', (req, res) => {
   res.send('hello world');
