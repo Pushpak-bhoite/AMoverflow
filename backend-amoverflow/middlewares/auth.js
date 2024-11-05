@@ -3,14 +3,20 @@ import jwt from "jsonwebtoken";
 import User from '../models/user.js'
 
 export const userAuth = async (req, res, next) => {
-    const { token } = req.cookies
+
+
+    console.log('imcalled')
+    // const { token } = req.cookies
+    let token = req.header('Authorization');
+    console.log('token', token)
     if (token) {
         try {
+            token = token.replace(/^Bearer\s/, '');
             const decode = jwt.verify(token, "secretkeyappearshere");
         console.log('decode->', decode)
         const {userId} =  decode;
         const user = await User.findById(userId)
-        console.log(user)
+        console.log('user', user)
         req.user = user //set user data             
         //  Return response with decode data      
         next()

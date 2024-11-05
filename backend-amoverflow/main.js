@@ -19,8 +19,8 @@ app.use(express.json());
 // This to handle json data coming from requests mainly post
 app.use('/auth', signUp)
 app.use('/auth', signIn)
-app.use(userAuth, profile)
-app.use(userAuth, askQuestion)
+app.use('/profile',userAuth, profile)
+app.use('/ask-question', userAuth, askQuestion)
 
 app.get('/', (req, res) => {
   res.send('hello world');

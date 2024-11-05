@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSignInUserMutation } from '../../feature/apiSlice.js';
+import { useSignInUserMutation } from '../../feature/apiSlice.ts';
 
 interface FormData {
   email: string;
@@ -37,7 +37,14 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      await signIn(formData);
+      signIn(formData)
+        .unwrap()
+        .then((res) => {
+          console.log(res?.data?.token)
+          localStorage.setItem('token',res?.data?.token);
+          // console.log('fulfilled', payload)
+        })
+        .catch((error) => console.error('rejected', error))
     }
   };
 

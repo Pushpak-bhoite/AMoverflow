@@ -6,9 +6,13 @@ const AnswerSchema = new mongoose.Schema({
     required: true,
   },
   ansUserID: {
-    type: mongoose.Schema.Types.ObjectId, // Assuming user IDs are ObjectIds
+    type: mongoose.Schema.Types.ObjectId, // User ID reference
     required: true,
-    ref: 'User', // Reference to the User model
+    ref: 'User',
+  },
+  ansUserName: {
+    type: String, // Store the user's name
+    required: true,
   },
 }, { timestamps: true });
 
@@ -24,7 +28,16 @@ const QuestionSchema = new mongoose.Schema({
     trim: true,
   },
   tags: {
-    type: [String], // Array of strings for tags
+    type: [String],
+    required: true,
+  },
+  userID: {
+    type: mongoose.Schema.Types.ObjectId, // User ID reference
+    required: true,
+    ref: 'User',
+  },
+  userName: {
+    type: String, // Store the user's name
     required: true,
   },
   answers: [AnswerSchema], // Array of answers

@@ -2,7 +2,7 @@ import express from 'express';
 const profile = express.Router();
 import jwt from "jsonwebtoken";
 import User from '../models/user.js'
-profile.get('/profile', async (req, res) => {
+profile.get('/', async (req, res) => {
     try {
         res.send(req.user)
         console.log(req.user)

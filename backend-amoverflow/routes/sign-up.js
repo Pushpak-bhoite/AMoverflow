@@ -7,7 +7,7 @@ signUp.post('/sign-up', async (req, res) => {
     try {
         // Extract user data from request body
         const { firstName, lastName, username, email, password } = req.body;
-console.log(req.body)
+        console.log('signUp.js',req.body)
         // Validate request data
         if (!firstName) return res.status(400).json({ error: 'First name is required.' });
         if (!lastName) return res.status(400).json({ error: 'Last name is required.' });
@@ -21,7 +21,7 @@ console.log(req.body)
         if (existingUser) {
             return res.status(400).json({ error: 'User with this email or username already exists.' });
         }
-console.log('-------------', username)
+        console.log('-------------', username)
         // Create a new user instance
         const newUser = new User({
             firstName,
