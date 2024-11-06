@@ -1,24 +1,24 @@
 import { useState, useEffect } from 'react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, X } from 'lucide-react';
 import axios from 'axios';
 
 interface FormData {
   title: string;
   description: string;
-  tags: string;
+  tags: string[];
 }
 
 export default function Component() {
   const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
-    tags: ''
+    tags: []
   });
+  const [tagInput, setTagInput] = useState<string>('');
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch the token from localStorage or any other storage you use
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       setToken(storedToken);
@@ -27,11 +27,34 @@ export default function Component() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
-    if (errors[name as keyof FormData]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+    if (name === 'tagInput') {
+      setTagInput(value);
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+      if (errors[name as keyof FormData]) {
+        setErrors(prev => ({ ...prev, [name]: '' }));
+      }
     }
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && tagInput.trim() !== '') {
+      e.preventDefault();
+      if (!formData.tags.includes(tagInput.trim())) {
+        setFormData(prev => ({
+          ...prev,
+          tags: [...prev.tags, tagInput.trim()]
+        }));
+      }
+      setTagInput('');
+    }
+  };
+
+  const removeTag = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.filter((_, i) => i !== index)
+    }));
   };
 
   const validateForm = (): boolean => {
@@ -42,8 +65,8 @@ export default function Component() {
     if (formData.description.length < 5) {
       newErrors.description = 'Question description must be at least 30 characters long';
     }
-    if (formData.tags.split(' ').filter(tag => tag.trim() !== '').length < 1) {
-      newErrors.tags = 'At least one tag is required';
+    if (formData.tags.length < 1) {
+      newErrors.tags = ['At least one tag is required'];
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -53,19 +76,14 @@ export default function Component() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        // Set the headers with the token
         const config = {
           headers: {
             Authorization: `Bearer ${token}`
           }
         };
-
-        // Send the data to your backend
         const res = await axios.post('http://localhost:3400/ask-question', formData, config);
         console.log('Response:', res);
-
-        // Reset form after successful submission
-        setFormData({ title: '', description: '', tags: '' });
+        setFormData({ title: '', description: '', tags: [] });
       } catch (error) {
         console.error('Error:', error);
       }
@@ -77,6 +95,7 @@ export default function Component() {
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Ask a Question</h1>
         <form onSubmit={handleSubmit} className="space-y-6 bg-white shadow-md rounded-lg p-6">
+          {/* Title Input */}
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
               Title
@@ -99,9 +118,11 @@ export default function Component() {
               </p>
             )}
           </div>
+
+          {/* Description Input */}
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            description
+              Description
             </label>
             <textarea
               id="description"
@@ -121,17 +142,20 @@ export default function Component() {
               </p>
             )}
           </div>
+
+          {/* Tags Input */}
           <div>
             <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-1">
               Tags
             </label>
             <input
               id="tags"
-              name="tags"
+              name="tagInput"
               type="text"
-              value={formData.tags}
+              value={tagInput}
               onChange={handleChange}
-              placeholder="e.g. react javascript typescript"
+              onKeyDown={handleTagKeyDown}
+              placeholder="Press Enter to add a tag"
               className={`w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                 errors.tags ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -142,8 +166,20 @@ export default function Component() {
                 {errors.tags}
               </p>
             )}
-            <p className="mt-1 text-sm text-gray-500">Add up to 5 tags to describe what your question is about</p>
+            <p className="mt-1 text-sm text-gray-500">Add up to 2 tags to describe what your question is about</p>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {formData.tags.map((tag, index) => (
+                <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                  {tag}
+                  <button onClick={() => removeTag(index)}>
+                    <X className="w-3 h-3 text-blue-800 hover:text-blue-600" />
+                  </button>
+                </span>
+              ))}
+            </div>
           </div>
+
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300"
@@ -153,5 +189,5 @@ export default function Component() {
         </form>
       </div>
     </div>
-  )
+  );
 }

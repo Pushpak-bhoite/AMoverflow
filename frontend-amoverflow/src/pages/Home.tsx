@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Search, Menu, Bell, MessageSquare, User, Home, Users, HelpCircle, ChevronUp, X } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useGetAllQuestionsQuery } from '../feature/apiSlice'
 
 // Mock data for questions
 const questions = [
@@ -17,10 +19,20 @@ const topQuestions = [
 
 export default function Component() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
   }
+ const { 
+  data, 
+  error, 
+  isLoading, 
+  isFetching ,
+  isError, 
+  isSuccess
+} =  useGetAllQuestionsQuery()
+ console.log('data', data)
+ console.log('error', error)
+ 
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -30,7 +42,7 @@ export default function Component() {
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <img className="h-8 w-auto" src="https://cdn.sstatic.net/Img/unified/sprites.svg?v=fcc0ea44ba27" alt="Stack Overflow" />
+                <img className="h-8 w-auto" src="https://cdn.sstatic./Img/unified/sprites.svg?v=fcc0ea44ba27" alt="Am Overflow" />
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <a href="#" className="border-b-2 border-orange-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
@@ -67,7 +79,7 @@ export default function Component() {
       </nav>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="container mx-auto px-4 sm:px-1  py-8">
         <div className="flex flex-col md:flex-row">
           {/* Left Sidebar */}
           <div className={`${isSidebarOpen ? 'block' : 'hidden'} fixed inset-0 z-40 md:static md:block md:w-1/5 md:mr-4`}>
@@ -78,7 +90,7 @@ export default function Component() {
                   <X className="h-6 w-6" />
                 </button>
               </div>
-              <nav className="space-y-1 p-4">
+              <nav className="space-y-2 p-4">
                 <a href="#" className="bg-gray-200 text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
                   <Home className="text-gray-500 mr-3 flex-shrink-0 h-6 w-6" />
                   Home
@@ -87,21 +99,22 @@ export default function Component() {
                   <Users className="text-gray-400 group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6" />
                   Community
                 </a>
-                <a href="#" className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
+                <Link to="/ask-question" className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md">
                   <HelpCircle className="text-gray-400 group-hover:text-gray-500 mr-3 flex-shrink-0 h-6 w-6" />
                   Ask Question
-                </a>
+                </Link>
               </nav>
             </div>
           </div>
 
           {/* Middle Content - All Questions */}
           <div className="w-full md:w-3/5">
-            <h1 className="text-3xl font-bold mb-4">All Questions</h1>
+            <h1 className="text-3xl font-bold mb-4 ">All Questions</h1>
             <div className="space-y-4">
               {questions.map((question) => (
                 <div key={question.id} className="bg-white p-4 rounded-lg shadow">
                   <h2 className="text-xl font-semibold mb-2">{question.title}</h2>
+                  <p className='text-sm text-gray-700'> <b> ram sham </b> - asked 2 months ago</p>
                   <div className="flex flex-wrap justify-between items-center text-sm text-gray-500">
                     <div className="flex space-x-4 mb-2 sm:mb-0">
                       <span>{question.votes} votes</span>
@@ -120,7 +133,7 @@ export default function Component() {
           </div>
 
           {/* Right Sidebar - Top Questions */}
-          <div className="w-full md:w-1/5 mt-4 md:mt-0">
+          <div className="w-full md:w-1/5 mt-4 md:mt-0 md:ml-4">
             <h2 className="text-lg font-semibold mb-4">Top Questions</h2>
             <div className="space-y-4">
               {topQuestions.map((question) => (

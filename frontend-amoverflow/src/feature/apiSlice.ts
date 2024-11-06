@@ -34,9 +34,6 @@ export const apiSlice = createApi({
         method: "POST",
         body: payload,
       }),
-      async onQueryStarted(payload, { dispatch, getState, extra }) {
-        console.log('payload', payload);
-      },
     }),
     signUpUser: builder.mutation<UserResponse, SignUpPayload>({
       query: (payload) => ({
@@ -48,7 +45,17 @@ export const apiSlice = createApi({
         console.log('payload', payload);
       },
     }),
+
+    getAllQuestions: builder.query({
+      query: () => ({
+        url: "/home",
+        method: "GET",
+      }),
+      // async onQueryStarted(payload, { dispatch, getState }) {
+      //   console.log('payload', payload);
+      // },
+    }),
   }),
 });
 
-export const { useSignInUserMutation, useSignUpUserMutation } = apiSlice;
+export const { useSignInUserMutation, useSignUpUserMutation, useGetAllQuestionsQuery } = apiSlice;
